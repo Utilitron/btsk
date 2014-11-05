@@ -136,3 +136,103 @@ Behavior.prototype = Object.create(Object.prototype, {
         }
     }
 });
+
+Decorator = function(child) { this._pChild = child; };
+Decorator.prototype = Object.create(new Behavior, {
+    _pChild: {
+        writable: true,
+        configurable: false,
+        enumerable: false,
+        value: null
+    }
+});
+
+Repeat = function(child) { this._pChild = child; };
+Repeat.prototype = Object.create(new Decorator, {
+    _iLimit: {
+        writable: true,
+        configurable: false,
+        enumerable: false,
+        value: null
+    },
+    iLimit: {
+        configurable: false,
+        set: function(count) {
+            "use strict";
+            _iLimit = count;
+        }
+    },
+    
+    _iCounter: {
+        writable: true,
+        configurable: false,
+        enumerable: false,
+        value: null
+    }
+    
+    onInitialize: { 
+    	configurable:false, 
+        value: function (){
+            _iCounter = 0;
+        }
+    }
+
+    update: { 
+    	configurable:false, 
+        value: function (){
+            for (;;) {
+                _pChild->tick();
+                if (_pChild.getStatus() == Status.BH_RUNNING) break;
+                if (_pChild.getStatus() == Status.BH_FAILURE) return Status.BH_FAILURE;
+                if (++_iCounter == _iLimit) return Status.BH_SUCCESS;
+                _pChild.reset();
+            }
+            return Status.BH_INVALID;
+        }
+    }
+});
+
+Composite.prototype = Object.create(new Behavior, {
+    _Children: {
+        writable: true,
+        configurable: false,
+        enumerable: false,
+        value: []
+    }
+    
+    addChild: {
+        writable: false,
+        configurable: false,
+        enumerable: true,
+        value: function(child) {
+            "use strict";
+            this._Children.push(child);
+        }
+    },
+
+    removeChild: {
+        writable: false,
+        configurable: false,
+        enumerable: true,
+        value: null
+    },
+    
+    clearChildren: {
+        writable: false,
+        configurable: false,
+        enumerable: true,
+        value: null
+    },
+});
+
+Parallel.prototype = Object.create(new Composite, {
+});
+
+Monitor.prototype = Object.create(new Parallel, {
+});
+
+ActiveSelector.prototype = Object.create(new Selector, {
+});
+
+ActiveSelector.prototype = Object.create(new Selector, {
+});
