@@ -46,7 +46,7 @@ Status.prototype = Object.create(Object.prototype, {
  * Base class for actions, conditions and composites.
  */
 Behavior.prototype = Object.create(Object.prototype, {
-	_eStatus: {
+    _eStatus: {
         writable: true,
         configurable: false,
         enumerable: false,
@@ -60,7 +60,7 @@ Behavior.prototype = Object.create(Object.prototype, {
         }
     },
 
-	update: {
+    update: {
         writable: true,
         configurable: false,
         enumerable: true,
